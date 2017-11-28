@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Socket.io force client reload</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <div id="container">
+      <div class="text-wrapper">
+        <button id="reload">Force client reload</button>
+        <h1>Seconds since last reload: <span id="seconds">0</span></h1>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      // Handle socket.io
+      var mapElement = document.getElementById('reload');
+      function refresh(){
+        location.reload();
+      }
+
+      mapElement.onclick = function(event){
+        var shoudReload = true;
+        socket.emit('reload', { shoudReload });
+        refresh();
+      };
+
+      var socket = io.connect();
+      socket.on('reload', function (data) {
+        refresh();
+      });
+      
+      
+      // Counter
+      var secondsLabel = document.getElementById("seconds");
+      var totalSeconds = 0;
+
+      function setTime(){
+        ++totalSeconds;
+        secondsLabel.innerHTML = totalSeconds%60;
+      }
+      setInterval(setTime, 1000);
+    </script>
+  </body>
+</html>
